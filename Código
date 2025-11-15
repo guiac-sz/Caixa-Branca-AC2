@@ -1,0 +1,55 @@
+package login;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class User {
+
+    public Connection conectarBD() {
+        Connection conn = null;
+        try {
+            Class.forName("com.mysql.Driver.Manager").newInstance();
+            String url = "jdbc:mysql://127.0.0.1/test?user=lopes&password=123";
+            conn = DriverManager.getConnection(url);
+        } catch (Exception e) { }
+        return conn;
+    }
+
+    public String nome = "";
+    public boolean result = false;
+
+    // (1) Início
+    public boolean verificarUsuario(String login, String senha) {
+        
+        // (2) SQL
+        String sql = "";
+        Connection conn = conectarBD();
+        sql = "select nome from usuarios ";
+        sql += "where login = '" + login + "' ";
+        sql += "and senha = '" + senha + "';";
+
+        // (3) Try
+        try {
+
+            Statement st = conn.createStatement();
+
+            // (4) Consulta
+            ResultSet rs = st.executeQuery(sql);
+
+            // (5) Decisão
+            if (rs.next()) {
+
+                // (6) Bloco verdadeiro
+                result = true;
+                nome = rs.getString("nome");
+            }
+
+        // (7) Bloco de exceção
+        } catch (Exception e) { }
+
+        // (8) Retorno
+        return result;
+    }
+}
